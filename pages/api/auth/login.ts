@@ -11,15 +11,15 @@ export default async function handler(req, res) {
     const { username, password } = req.body;
 
     const user = await prisma.user.findUnique({
-      where: { username },
+      where: { username }
     });
 
     if (!user) {
       return res.status(401).json({ message: "User not found" });
     }
 
-    // SIMPLE LOGIN (no bcrypt dulu)
-    if (password !== user.password) {
+    // SEMENTARA (plain text)
+    if (user.password !== password) {
       return res.status(401).json({ message: "Wrong password" });
     }
 

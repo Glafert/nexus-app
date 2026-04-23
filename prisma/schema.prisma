@@ -12,5 +12,5 @@ model User {
   username String
   password String
   role     String
-  avatar   String?
+  avatar   String?   // ← INI HARUS ADA
 }

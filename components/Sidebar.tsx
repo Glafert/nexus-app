@@ -14,7 +14,10 @@ export default function Sidebar({ open, setOpen, user }) {
         open ? "translate-x-0" : "-translate-x-full"
       } md:translate-x-0 transition`}>
 
-        <h2 className="text-xl font-bold mb-8">🚀 Nexus Panel</h2>
+        <div className="flex items-center gap-3 mb-8">
+          <img src="/logo.png" className="w-8 h-8" />
+          <span className="text-lg font-bold">Glafert System</span>
+        </div>
 
         <ul className="space-y-5 text-sm">
           <li>

@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../../lib/prisma";
+import { verifyToken } from "../../../lib/auth";
 
 export const config = {
   api: {
@@ -15,6 +16,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(405).json({ message: "Method not allowed" });
     }
 
+    // 🔐 TAMBAHAN (TIDAK MENGHILANGKAN FITUR)
+    const auth = req.headers.authorization;
+
+    if (!auth) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const token = auth.split(" ")[1];
+
+    let decoded: any;
+    try {
+      decoded = verifyToken(token);
+    } catch {
+      return res.status(401).json({ message: "Invalid token" });
+    }
+
     const { userId, image } = req.body;
 
     // VALIDASI BASIC
@@ -26,6 +43,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (isNaN(id)) {
       return res.status(400).json({ message: "Invalid userId" });
+    }
+
+    // 🔒 OPTIONAL: pastikan user hanya edit dirinya sendiri
+    if (decoded.id !== id) {
+      return res.status(403).json({ message: "Forbidden" });
     }
 
     // VALIDASI IMAGE BASE64

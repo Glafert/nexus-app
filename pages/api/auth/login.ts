@@ -1,33 +1,43 @@
-// pages/api/auth/login.ts
+import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../../lib/prisma";
-import { signToken } from "../../../lib/auth";
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method !== "POST") {
-      return res.status(405).end();
+      return res.status(405).json({ message: "Method not allowed" });
     }
 
     const { username, password } = req.body;
 
-    const user = await prisma.user.findUnique({
-      where: { username }
+    console.log("LOGIN INPUT:", username, password);
+
+    if (!username || !password) {
+      return res.status(400).json({ message: "Missing username or password" });
+    }
+
+    const user = await prisma.user.findFirst({
+      where: {
+        username: username,
+        password: password,
+      },
     });
 
+    console.log("USER FOUND:", user);
+
     if (!user) {
-      return res.status(401).json({ message: "User not found" });
+      return res.status(401).json({ message: "Login gagal" });
     }
 
-    // SEMENTARA (plain text)
-    if (user.password !== password) {
-      return res.status(401).json({ message: "Wrong password" });
-    }
+    return res.status(200).json({
+      message: "Login berhasil",
+      user,
+    });
 
-    const token = signToken(user);
+  } catch (err: any) {
+    console.error("LOGIN ERROR:", err);
 
-    res.json({ token, user });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({
+      message: err.message,
+    });
   }
 }

@@ -14,3 +14,17 @@ model User {
   role     String
   avatar   String?   // ← INI HARUS ADA
 }
+
+model Todo {
+  id        String   @id @default(uuid())
+  title     String
+  column    String
+  color     String
+  userId    String
+  createdAt DateTime @default(now())
+}
+
+model Board {
+  userId String @id
+  data   String
+}

@@ -2,22 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-/* LIGHT MODE DEFAULT */
 body {
   @apply bg-gray-100 text-gray-900;
 }
 
-/* DARK MODE */
 .dark body {
   @apply bg-gray-900 text-gray-100;
 }
 
-/* FIX TABLE TEXT */
-.dark table {
-  @apply text-white;
-}
-
-/* INPUT FIX */
 .dark input, .dark select {
   @apply bg-gray-800 text-white border-gray-600;
+}
+
+/* 🔥 FIX DRAG */
+.dnd-card {
+  user-select: none;
+}
+
+/* 🔥 MOBILE SMOOTH */
+.dnd-board {
+  -webkit-overflow-scrolling: touch;
 }
